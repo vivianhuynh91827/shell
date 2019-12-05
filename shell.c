@@ -8,7 +8,6 @@
 
 int main(){
   printf("Initiating shell\n");
-  int parent = getpid();
   if (!fork()){
     wait(NULL);
   }
@@ -21,9 +20,4 @@ int main(){
     char ** args = parse_args(s);
     execvp(args[0], args);
   }
-  /*
-  while(1){
-    signal(SIGINT, sig_handler);
-  }
-  */
 }
