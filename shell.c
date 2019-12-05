@@ -8,12 +8,16 @@
 
 int main(){
   printf("Initiating shell\n");
-  char * s = malloc(256);
+  char input[256];
   printf("Enter command: ");
-  fgets(s, 256, stdin);
-  printf("Your command was %s\n", s);
+  fgets(input, 256, stdin);
+  input[strlen(input)-1] = '\0';
+  char * s = input;
+  char ** args = parse_args(s);
+  execvp(args[0], args);
+  /*
   while(1){
     signal(SIGINT, sig_handler);
-    
   }
+  */
 }
