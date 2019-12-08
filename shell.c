@@ -45,6 +45,8 @@ int main(){
   int f = fork();
   if (f== -1){
     printf("Errno: %d, Error: %s\n",errno, strerror(errno));
+  if (!fork()){
+    wait(NULL);
   }
   else{
     char input[256];
