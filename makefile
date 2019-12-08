@@ -1,5 +1,11 @@
+ifeq ($(DEBUG),true)
+	CC = gcc -g
+else
+	CC = gcc
+endif
+
 all: shell.o parse.o execute.o
-	gcc -o program shell.o parse.o execute.o
+	$(CC) -o program shell.o parse.o execute.o
 
 shell.o: shell.c shell.h parse.h execute.h
 	gcc -c shell.c

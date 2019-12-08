@@ -11,9 +11,4 @@
 #include <sys/wait.h>
 #include "execute.h"
 
-void cd(char ** args){
-}
-
-void exit(){
-
-}
+void cd(char ** args){}
