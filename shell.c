@@ -18,15 +18,18 @@ static void sighandler(int signo) {
 int main(){
   printf("Initiating shell\n");
   int parent = getpid();
-  char command[256];
+  char * command= malloc ( 256 * sizeof(char));
   char ** args;
-  char dir[256];
+  char * dir= malloc(256 * sizeof(char));;
   while(1){
     signal(SIGINT, sighandler);
     printf("%s $ ", getcwd(dir, 256));
     fgets(command, 256, stdin);
     command[strlen(command)-1] = '\0';
-    args = parse_args(command);
+    char * s = command;
+    
+    args = parse_args(s);
+    printf("args\n");
 
     if (strcmp(args[0], "exit") == 0){
       exit(0);
@@ -36,8 +39,10 @@ int main(){
       //cd
     }
 
-    else if (args[0][0] != '\0'){
+    //   else if (args[0][0] != '\0'){
+    else {
       execvp(args[0], args);
+      free(command);
       return 0;
     }
   }
