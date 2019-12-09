@@ -15,6 +15,7 @@ static void sighandler(int signo) {
   }
 }
 
+
 int main(){
   printf("Initiating shell\n");
   int parent = getpid();
@@ -29,7 +30,6 @@ int main(){
     char * s = command;
     
     args = parse_args(s);
-    printf("args\n");
 
     if (strcmp(args[0], "exit") == 0){
       exit(0);
