@@ -30,6 +30,7 @@ int main(){
     char * s = command;
     
     args = parse_args(s);
+    printf("%s %s\n", args[0], args[1]);
     int len_args = 0;
     for (int i = 0; !args[len_args]; i ++){
       len_args++;
@@ -41,7 +42,10 @@ int main(){
     }
 
     else if (strcmp(args[0], "cd")==0){
-      if (len_args >= 2){
+      if (len_args < 2 || len_args > 2){
+	printf("Incorrect Syntax: cd <PATH>\n");
+      }
+      else {
 	int fd = chdir(args[1]);
 	if (!fd){
 	  printf("errno: %d, error: %s\n", errno, strerror(errno));
@@ -57,9 +61,13 @@ int main(){
       }
       else{
 	execvp(args[0], args);
-      }
+	return 0;
+      } 
     }
 
     free(command);
+    for (int i = 0; i < len_args; i ++){
+      free(&args[i]);
+    }
   }
 }
