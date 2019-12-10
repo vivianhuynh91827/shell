@@ -20,23 +20,17 @@ int main(){
   printf("Initiating shell\n");
   int parent = getpid();
   char * command= malloc ( 256 * sizeof(char));
-  char ** args;
+  char ** args= malloc ( 6 * sizeof(char *));
   char * dir= malloc(256 * sizeof(char));;
+
   while(1){
     signal(SIGINT, sighandler);
     printf("%s$ ", getcwd(dir, 256));
     fgets(command, 256, stdin);
     command[strlen(command)-1] = '\0';
     char * s = command;
-    
-    args = parse_args(s);
-    printf("%s %s\n", args[0], args[1]);
-    int len_args = 0;
-    for (int i = 0; !args[len_args]; i ++){
-      len_args++;
-    }
-    len_args++;
-
+    int len_args = parse_args(s, args);
+    printf("%d\n", len_args);
     if (strcmp(args[0], "exit") == 0){
       exit(0);
     }
