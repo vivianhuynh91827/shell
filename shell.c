@@ -24,7 +24,7 @@ int main(){
   char * dir= malloc(256 * sizeof(char));;
   while(1){
     signal(SIGINT, sighandler);
-    printf("%s $ ", getcwd(dir, 256));
+    printf("%s$ ", getcwd(dir, 256));
     fgets(command, 256, stdin);
     command[strlen(command)-1] = '\0';
     char * s = command;
@@ -39,29 +39,12 @@ int main(){
       //cd
     }
 
-    //   else if (args[0][0] != '\0'){
     else {
-      execvp(args[0], args);
-      free(command);
-      return 0;
+      if (!fork()){
+	execvp(args[0], args);
+	free(command);
+	return 0;
+      }
     }
   }
-  /*
-  int f = fork();
-  if (f== -1){
-    printf("Errno: %d, Error: %s\n",errno, strerror(errno));
-  if (!fork()){
-    wait(NULL);
-  }
-  else{
-    char input[256];
-    printf("Enter command: ");
-    fgets(input, 256, stdin);
-    input[strlen(input)-1] = '\0';
-    char * s = input;
-    char ** args = parse_args(s);
-    execvp(args[0], args);
-    return 0;
-  }
-  */
 }
