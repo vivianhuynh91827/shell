@@ -2,5 +2,4 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-char ** parse_args(char * line);
+int parse_args(char * line, char ** args);
