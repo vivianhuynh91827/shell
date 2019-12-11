@@ -34,7 +34,9 @@ int main(){
     //int len_args = parse_args(s, args);
     //printf("%d\n", len_args);
     char ** args = parse_args(s);
-    int len_args = 0;
+    int len_args= 0;
+    // int len_args = get_len_args(args);
+    //printf("%d\n", len_args);
     
     if (strcmp(args[0], "exit") == 0){
       exit(0);
