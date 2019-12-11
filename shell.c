@@ -20,6 +20,7 @@ int main(){
   printf("Initiating shell\n");
   int parent = getpid();
   char command[256];
+  int f;
   //char ** args= calloc (6,256 * sizeof(char));
   //char  command[256];
   // char ** args;
@@ -41,39 +42,28 @@ int main(){
       printf("command #%d: %s\n", i, commands[i]);
     }
     //printf("%d\n", len_args);
-
-    if (strcmp(commands[0], "exit") == 0){
-      exit(0);
-    }
-
-    else if (strcmp(commands[0], "cd")==0){
-      int fd = chdir(commands[1]);
-      printf("Hello\n");
-      if (!fd){
-        printf("errno: %d, error: %s\n", errno, strerror(errno));
-      }
-    }
-
-    else {
-      int f= fork();
+    for (int i = 0 ; i < len_args ; i ++){
+      f = fork();
       if (f) {
         int status;
         wait(&status);
       }
       else{
-        for (int i = 0; i<len_args; i++){
-          int c= fork();
-          if (c) {
-            int s;
-            wait(&s);
-          }
-          else{
-            char ** args = parse_args(commands[i]);
-            execvp(args[0], args);
+        char ** args = parse_args(commands[i]);
+        if (strcmp(args[0], "exit" == 0)){
+          exit(0);
+        }
+        else if (strcmp(args[0], "cd" == 0)){
+          int fd = chdir(args[1]);
+          if (!fd){
+            printf("errno: %d, error: %s\n", errno, strerror(errno));
           }
         }
-        return 0;
+        else{
+          execvp(args[0], args);
+        }
       }
+      return 0;
     }
   }
 }
