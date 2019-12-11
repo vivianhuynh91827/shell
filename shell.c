@@ -33,20 +33,25 @@ int main(){
     char * s = command;
     //int len_args = parse_args(s, args);
     //printf("%d\n", len_args);
-    char ** args = parse_args(s);
-    int len_args = get_len_args(args);
+    //char ** args = parse_args(s);
+    char ** commands = parse_line(s);
+    int len_args = get_len_args(commands);
+    printf("len args: %d\n", len_args);
+    for (int i = 0; i<len_args; i++){
+      printf("command #%d: %s\n", i, commands[i]);
+    }
     //printf("%d\n", len_args);
 
-    if (strcmp(args[0], "exit") == 0){
+    if (strcmp(commands[0], "exit") == 0){
       exit(0);
     }
 
-    else if (strcmp(args[0], "cd")==0){
+    else if (strcmp(commands[0], "cd")==0){
       if (len_args < 2 || len_args > 2){
         printf("Incorrect Syntax: cd <PATH>\n");
       }
       else {
-        int fd = chdir(args[1]);
+        int fd = chdir(commands[1]);
         if (!fd){
           printf("errno: %d, error: %s\n", errno, strerror(errno));
         }
@@ -60,7 +65,17 @@ int main(){
         wait(&status);
       }
       else{
-        execvp(args[0], args);
+        for (int i = 0; i<len_args; i++){
+          int c= fork();
+          if (c) {
+            int s;
+            wait(&s);
+          }
+          else{
+            char ** args = parse_args(commands[i]);
+            execvp(args[0], args);
+          }
+        }
         return 0;
       }
     }
