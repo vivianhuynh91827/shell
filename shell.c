@@ -47,14 +47,10 @@ int main(){
     }
 
     else if (strcmp(commands[0], "cd")==0){
-      if (len_args < 2 || len_args > 2){
-        printf("Incorrect Syntax: cd <PATH>\n");
-      }
-      else {
-        int fd = chdir(commands[1]);
-        if (!fd){
-          printf("errno: %d, error: %s\n", errno, strerror(errno));
-        }
+      int fd = chdir(commands[1]);
+      printf("Hello\n");
+      if (!fd){
+        printf("errno: %d, error: %s\n", errno, strerror(errno));
       }
     }
 
@@ -79,12 +75,5 @@ int main(){
         return 0;
       }
     }
-    //free(command);
-    /*
-    for (int i = 0; i < len_args; i ++){
-      free(&args[i]);
-    }
-    */
-
   }
 }
