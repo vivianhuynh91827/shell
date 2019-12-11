@@ -39,7 +39,7 @@ int main(){
     int len_args = get_len_args(commands);
     printf("len args: %d\n", len_args);
     for (int i = 0; i<len_args; i++){
-      printf("command #%d: %s\n", i, commands[i]);
+      printf("command #%d: %s\n", i + 1, commands[i]);
     }
     //printf("%d\n", len_args);
     for (int i = 0 ; i < len_args ; i ++){

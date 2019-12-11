@@ -18,6 +18,7 @@ int get_len_args(char ** args){
   while (args[len] != NULL){
     len ++;
   }
+  if (len == 0) return 1;
   return len;
 }
 
