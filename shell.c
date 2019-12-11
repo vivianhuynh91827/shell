@@ -43,27 +43,27 @@ int main(){
     }
     //printf("%d\n", len_args);
     for (int i = 0 ; i < len_args ; i ++){
-      f = fork();
-      if (f) {
-        int status;
-        wait(&status);
+      char ** args = parse_args(commands[i]);
+      if (strcmp(args[0], "exit") == 0){
+        exit(0);
+      }
+      else if (strcmp(args[0], "cd") == 0){
+        int fd = chdir(args[1]);
+        if (!fd){
+          printf("errno: %d, error: %s\n", errno, strerror(errno));
+        }
       }
       else{
-        char ** args = parse_args(commands[i]);
-        if (strcmp(args[0], "exit" == 0)){
-          exit(0);
-        }
-        else if (strcmp(args[0], "cd" == 0)){
-          int fd = chdir(args[1]);
-          if (!fd){
-            printf("errno: %d, error: %s\n", errno, strerror(errno));
-          }
-        }
-        else{
-          execvp(args[0], args);
-        }
+	f = fork();
+	if (f) {
+	  int status;
+	  wait(&status);
+	}
+	else{ 
+	  execvp(args[0], args);
+	  return 0;
+	}
       }
-      return 0;
     }
   }
 }
