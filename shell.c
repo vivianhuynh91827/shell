@@ -62,8 +62,8 @@ int main(){
         else{
           execvp(args[0], args);
         }
+        return 0;
       }
-      return 0;
     }
   }
 }
