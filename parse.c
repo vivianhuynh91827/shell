@@ -27,7 +27,7 @@ char ** parse_args(char * line){
 
 int get_len_args(char ** args){
   int len = 0;
-  while (args[len][0] != 0){
+  while (args[len] != NULL){
     len ++;
   }
   return len;

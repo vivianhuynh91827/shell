@@ -19,12 +19,12 @@ static void sighandler(int signo) {
 int main(){
   printf("Initiating shell\n");
   int parent = getpid();
-  char * command= malloc ( 256 * sizeof(char));
+  char command[256];
   //char ** args= calloc (6,256 * sizeof(char));
   //char  command[256];
   // char ** args;
   char * dir= malloc ( 256 * sizeof(char));;
-  
+
   while(1){
     signal(SIGINT, sighandler);
     printf("%s$ ", getcwd(dir, 256));
@@ -34,41 +34,42 @@ int main(){
     //int len_args = parse_args(s, args);
     //printf("%d\n", len_args);
     char ** args = parse_args(s);
-    int len_args= 0;
-    // int len_args = get_len_args(args);
+    int len_args = get_len_args(args);
     //printf("%d\n", len_args);
-    
+
     if (strcmp(args[0], "exit") == 0){
       exit(0);
     }
 
     else if (strcmp(args[0], "cd")==0){
       if (len_args < 2 || len_args > 2){
-	printf("Incorrect Syntax: cd <PATH>\n");
+        printf("Incorrect Syntax: cd <PATH>\n");
       }
       else {
-	int fd = chdir(args[1]);
-	if (!fd){
-	  printf("errno: %d, error: %s\n", errno, strerror(errno));
-	}
+        int fd = chdir(args[1]);
+        if (!fd){
+          printf("errno: %d, error: %s\n", errno, strerror(errno));
+        }
       }
     }
 
     else {
       int f= fork();
       if (f) {
-	int status;
-	wait(&status);
+        int status;
+        wait(&status);
       }
       else{
-	execvp(args[0], args);
-	return 0;
-      } 
+        execvp(args[0], args);
+        return 0;
+      }
     }
-    free(command);
+    //free(command);
+    /*
     for (int i = 0; i < len_args; i ++){
       free(&args[i]);
     }
-    
+    */
+
   }
 }
