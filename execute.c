@@ -23,8 +23,10 @@ void exec_line(char * line){
 
 void exec_command(char * command){
   char ** args = parse_args(command, " ");
+  //printf("len_args: %d\n", len_args(args));
   if (exec_cd(args)) return;
   if (exec_exit(args)) return;
+  //if (exec_pipe(args)) return;
   else{
     exec_regular(args);
   }
@@ -65,14 +67,24 @@ void exec_regular (char ** args){
   }
 }
 
-void exec_pipe(char ** args) {
-  FILE * in = popen( args[0], "r" );
-  FILE * out = popen( args[1], "w" );
-  char buff[256];
-  char * input = fgets( buff, 256, in );
-  while ( input ) {
-    fputs( buff, out );
+int exec_pipe(char ** args) {
+  if (strcmp(args[1], "|")==0){
+    FILE * in = popen( args[0], "r" );
+    if (in < 0) {
+      printf("errno: %d, error: %s\n", errno, strerror(errno));
+    }
+    FILE * out = popen( args[2], "w" );
+    if (out < 0) {
+      printf("errno: %d, error: %s\n", errno, strerror(errno));
+    }
+    char buff[256];
+    char * input = fgets( buff, 256, in );
+    while ( input ) {
+      fputs( buff, out );
+    }
+    pclose(in);
+    pclose(out);
+    return 1;
   }
-  pclose(in);
-  pclose(out);
+  return 0;
 }

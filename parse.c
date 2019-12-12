@@ -29,3 +29,13 @@ char * strip(char * line){
   }
   return start;
 }
+
+int len_args(char ** args){
+  char * cur_arg = args[0];
+  int len = 0;
+  while (cur_arg){
+    len ++;
+    cur_arg = args[1];
+  }
+  return len;
+}

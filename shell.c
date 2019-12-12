@@ -16,7 +16,7 @@ static void sighandler(int signo) {
 }
 
 int main(){
-  printf("Initiating shell\n");
+  printf("\nInitiating shell\n");
   char input[256];
   char * dir = malloc(256 * sizeof(char));
   while(1){
