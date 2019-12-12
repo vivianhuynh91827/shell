@@ -64,3 +64,15 @@ void exec_regular (char ** args){
     execvp(args[0], args);
   }
 }
+
+void exec_pipe(char ** args) {
+  FILE * in = popen( args[0], "r" );
+  FILE * out = popen( args[1], "w" );
+  char buff[256];
+  char * input = fgets( buff, 256, in );
+  while ( input ) {
+    fputs( buff, out );
+  }
+  pclose(in);
+  pclose(out);
+}
