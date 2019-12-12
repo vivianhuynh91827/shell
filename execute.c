@@ -63,7 +63,10 @@ void exec_regular (char ** args){
     wait(&status);
   }
   else{
-    execvp(args[0], args);
+    int error = execvp(args[0], args);
+    if (error == -1){
+      printf("That's not a valid command\n");
+    }
   }
 }
 
