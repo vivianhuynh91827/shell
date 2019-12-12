@@ -1,37 +1,16 @@
 #include "parse.h"
 
-char ** parse_args(char * line){
+char ** parse_args(char * line, char * parsed){
   char ** args = calloc (6, 256 * sizeof(char));
   char * stripped = strip(line);
-  char * token = strsep(&stripped, " ");
+  char * token = strsep(&stripped, parsed);
   int ind = 0;
   while (token) {
     args[ind] = token;
     ind ++;
-    token = strsep(&stripped, " ");
+    token = strsep(&stripped, parsed);
   }
   return args;
-}
-
-int get_len_args(char ** args){
-  int len = 0;
-  while (args[len]){
-    len++;
-  }
-  return len;
-}
-
-char ** parse_line(char * line){
-  char ** commands = calloc(6, 256 * sizeof(char));
-  char * stripped = strip(line);
-  char * token = strsep(& stripped, ";");
-  int ind = 0;
-  while (token){
-    commands[ind] = token;
-    ind++;
-    token = strsep(&stripped, ";");
-  }
-  return commands;
 }
 
 char * strip(char * line){

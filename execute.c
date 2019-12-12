@@ -13,7 +13,7 @@
 #include "parse.h"
 
 void exec_line(char * line){
-  char ** commands = parse_line(line);
+  char ** commands = parse_args(line, ";");
   int i = 0;
   while(commands[i]){
     exec_command(commands[i]);
@@ -22,7 +22,7 @@ void exec_line(char * line){
 }
 
 void exec_command(char * command){
-  char ** args = parse_args(command);
+  char ** args = parse_args(command, " ");
   if (exec_cd(args)) return;
   if (exec_exit(args)) return;
   else{
