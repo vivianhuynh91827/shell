@@ -59,7 +59,7 @@ int main(){
 	  int status;
 	  wait(&status);
 	}
-	else{ 
+	else{
 	  execvp(args[0], args);
 	  return 0;
 	}
