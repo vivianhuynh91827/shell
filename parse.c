@@ -15,21 +15,21 @@ char ** parse_args(char * line){
 
 int get_len_args(char ** args){
   int len = 0;
-  while (args[len] != NULL){
-    len ++;
+  while (args[len]){
+    len++;
   }
-  if (len == 0) return 1;
   return len;
 }
 
 char ** parse_line(char * line){
   char ** commands = calloc(6, 256 * sizeof(char));
-  char * token = strsep(& line, ";");
+  char * stripped = strip(line);
+  char * token = strsep(& stripped, ";");
   int ind = 0;
   while (token){
     commands[ind] = token;
     ind++;
-    token = strsep(&line, ";");
+    token = strsep(&stripped, ";");
   }
   return commands;
 }
