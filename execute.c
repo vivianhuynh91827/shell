@@ -61,6 +61,6 @@ void exec_regular (char ** args){
     wait(&status);
   }
   else{
-    error = execvp(args[0], args);
+    execvp(args[0], args);
   }
 }
