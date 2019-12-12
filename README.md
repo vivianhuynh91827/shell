@@ -1,2 +1,15 @@
-# shell
-https://github.com/mks65/shell.git
+Shell by Vivian Huynh and Jeffrey Chen
+
+Features:
+	Executes commands
+	
+
+Attempted:
+
+Bugs:
+
+Files & Function Headers:
+parse.c
+	
+
+execute.c
