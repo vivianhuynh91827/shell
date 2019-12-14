@@ -91,7 +91,10 @@ int exec_redirect_output(char ** args){
         int fd = open(args[c + 1], O_CREAT|O_WRONLY, 0644);
         dup(STDOUT_FILENO);
         dup2(fd, STDOUT_FILENO);
-        execvp(input[0], input);
+        int error = execvp(input[0], input);
+        if (error == -1){
+          printf("That's not a valid command\n");
+        }
         close(fd);
       }
       return 1;
@@ -105,19 +108,29 @@ int exec_redirect_input(char ** args){
   int c = 0;
   while(args[c]){
     if (strcmp(args[c], "<") == 0){
-      char ** a = calloc(128, 256 * sizeof(char));
-      for (int j = 0; j<c; j++){
-        a[j] = args[j];
+      int f = fork();
+      if (f) {
+        int status;
+        wait(&status);
       }
-      int fd = open(args[c + 1], O_RDONLY, 0644);
-      if (fd < 0) {
-        printf("Invalid input file %d: %s\n", errno, strerror(errno));
-        return 1;
+      else{
+        char ** a = calloc(128, 256 * sizeof(char));
+        for (int j = 0; j<c; j++){
+          a[j] = args[j];
+        }
+        int fd = open(args[c + 1], O_RDONLY, 0644);
+        if (fd < 0) {
+          printf("Invalid input file %d: %s\n", errno, strerror(errno));
+          return 1;
+        }
+        dup(STDIN_FILENO);
+        dup2(fd, STDIN_FILENO);
+        int error = execvp(a[0], a);
+        if (error == -1){
+          printf("That's not a valid command\n");
+        }
+        close(fd);
       }
-      dup(STDIN_FILENO);
-      dup2(fd, STDIN_FILENO);
-      execvp(a[0], a);
-      close(fd);
       return 1;
     }
     c++;
