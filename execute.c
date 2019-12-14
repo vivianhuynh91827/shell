@@ -28,6 +28,7 @@ void exec_command(char * command){
   if (exec_cd(args)) return;
   if (exec_exit(args)) return;
   if (exec_redirect_output(args)) return;
+  if (exec_redirect_input(args)) return;
   //if (exec_pipe(args)) return;
   else{
     exec_regular(args);
@@ -87,6 +88,30 @@ int exec_redirect_output(char ** args){
       dup(STDOUT_FILENO);
       dup2(fd, STDOUT_FILENO);
       execvp(input[0], input);
+      close(fd);
+      return 1;
+    }
+    c++;
+  }
+  return 0;
+}
+
+int exec_redirect_input(char ** args){
+  int c = 0;
+  while(args[c]){
+    if (strcmp(args[c], "<") == 0){
+      char ** a = calloc(128, 256 * sizeof(char));
+      for (int j = 0; j<c; j++){
+        a[j] = args[j];
+      }
+      int fd = open(args[c + 1], O_RDONLY, 0644);
+      if (fd < 0) {
+        printf("Invalid input file %d: %s\n", errno, strerror(errno));
+        return 1;
+      }
+      dup(STDIN_FILENO);
+      dup2(fd, STDIN_FILENO);
+      execvp(a[0], a);
       close(fd);
       return 1;
     }
