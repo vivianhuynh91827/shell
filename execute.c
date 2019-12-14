@@ -128,21 +128,32 @@ int exec_redirect_output(char ** args){
         for (int j = 0; j<c; j++){
           input[j] = args[j];
         }
-        fclose(fopen(args[c + 1], "w"));
-        int fd = open(args[c + 1], O_CREAT|O_WRONLY, 0644);
-        dup(STDOUT_FILENO);
-        dup2(fd, STDOUT_FILENO);
-        int error = execvp(input[0], input);
-        if (error == -1){
-          printf("That's not a valid command\n");
-        }
-        close(fd);
+        output(input, args[c+1]);
       }
       return 1;
     }
     c++;
   }
   return 0;
+}
+
+/*=============== void output (char ** input, char * output) =============
+  Input: char ** input
+         char * output
+  Returns: Nothing
+
+  Executes the commands in input and outputs it to output
+======================================================================*/
+void output(char ** input, char * output){
+  fclose(fopen(output, "w"));
+  int fd = open(output, O_CREAT|O_WRONLY, 0644);
+  dup(STDOUT_FILENO);
+  dup2(fd, STDOUT_FILENO);
+  int error = execvp(input[0], input);
+  if (error == -1){
+    printf("That's not a valid command\n");
+  }
+  close(fd);
 }
 
 /*=============== void exec_redirect_input (char ** args) =============
