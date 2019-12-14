@@ -15,6 +15,12 @@ static void sighandler(int signo) {
   }
 }
 
+/*=========== int main() ==================
+  Input: nothing
+  Returns: nothing
+
+  Forever loop that displays the user's path and prompts the user for input
+=========================================*/
 int main(){
   printf("\nInitiating shell\n");
   char input[256];

@@ -13,6 +13,12 @@
 #include "execute.h"
 #include "parse.h"
 
+/*=============== void exec_line(char * line) =============
+  Input: char * line
+  Returns: nothing
+
+  Calls parse_args in order to discern commands seperated by semicolons and then calls exec_command
+========================================================*/
 void exec_line(char * line){
   char ** commands = parse_args(line, ";");
   int i = 0;
@@ -22,6 +28,14 @@ void exec_line(char * line){
   }
 }
 
+/*======= void exec_command (char * command) =============
+  Input: char * command
+  Returns: nothing
+
+  Calls parse_args in order to discern arguments and continues calling execute functions until it reaches the correct one
+  If the correct exec command is called, it will return 1, causing exec_command to return
+  Otherwise, it continues trying the other execute functions
+========================================================*/
 void exec_command(char * command){
   char ** args = parse_args(command, " ");
   //printf("len_args: %d\n", len_args(args));
@@ -35,6 +49,13 @@ void exec_command(char * command){
   }
 }
 
+/*=============== int exec_cd (char ** args) =============
+  Input: char ** args
+  Returns: 1 if cd is the first argument
+           0 otherwise
+
+  Executes cd
+========================================================*/
 int exec_cd (char ** args){
   if (strcmp(args[0], "cd") == 0){
     int fd = chdir(args[1]);
@@ -46,6 +67,13 @@ int exec_cd (char ** args){
   return 0;
 }
 
+/*=============== int exec_exit (char ** args) =============
+  Input: char ** args
+  Returns: 1 if exit is the first argument
+           0 otherwise
+
+  Executes exit
+==========================================================*/
 int exec_exit (char ** args){
   if (strcmp(args[0], "exit") == 0){
     printf("logout\n");
@@ -59,6 +87,12 @@ int exec_exit (char ** args){
   return 0;
 }
 
+/*=============== void exec_regular (char ** args) =============
+  Input: char ** args
+  Returns: Nothing
+
+  Executes a regular command. Prints an error message if command is invalid.
+==============================================================*/
 void exec_regular (char ** args){
   int f = fork();
   if (f) {
@@ -73,6 +107,13 @@ void exec_regular (char ** args){
   }
 }
 
+/*=============== void exec_redirect_output (char ** args) =============
+  Input: char ** args
+  Returns: 1 if redirect output is called
+           0 otherwise
+
+  Executes simple redirection using > (redirecting stdout)
+======================================================================*/
 int exec_redirect_output(char ** args){
   int c = 0;
   while(args[c]){
@@ -83,7 +124,7 @@ int exec_redirect_output(char ** args){
         wait(&status);
       }
       else{
-        char ** input = calloc(128, 256 * sizeof(char));
+        char ** input = calloc(256, sizeof(char));
         for (int j = 0; j<c; j++){
           input[j] = args[j];
         }
@@ -104,6 +145,13 @@ int exec_redirect_output(char ** args){
   return 0;
 }
 
+/*=============== void exec_redirect_input (char ** args) =============
+  Input: char ** args
+  Returns: 1 if redirect input is called
+           0 otherwise
+
+  Executes simple redirection using < (redirecting stdin)
+======================================================================*/
 int exec_redirect_input(char ** args){
   int c = 0;
   while(args[c]){
@@ -114,7 +162,7 @@ int exec_redirect_input(char ** args){
         wait(&status);
       }
       else{
-        char ** a = calloc(128, 256 * sizeof(char));
+        char ** a = calloc(256, sizeof(char));
         for (int j = 0; j<c; j++){
           a[j] = args[j];
         }
