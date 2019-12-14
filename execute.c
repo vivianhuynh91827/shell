@@ -81,10 +81,7 @@ int exec_redirect_output(char ** args){
       for (int j = 0; j<c; j++){
         input[j] = args[j];
       }
-      int fd = open(args[c + 1], O_CREAT|O_EXCL|O_WRONLY, 0755);
-      if (fd < 0) {
-        fd = open(args[c + 1], O_WRONLY);
-      }
+      int fd = open(args[c + 1], O_CREAT|O_WRONLY, 0644);
       dup(STDOUT_FILENO);
       dup2(fd, STDOUT_FILENO);
       execvp(input[0], input);
