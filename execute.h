@@ -4,3 +4,4 @@ int exec_cd (char ** args);
 int exec_exit (char ** args);
 int exec_pipe (char ** args);
 void exec_regular (char ** args);
+int exec_redirect_output(char ** args);

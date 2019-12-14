@@ -9,6 +9,7 @@
 #include <sys/dir.h>
 #include <time.h>
 #include <sys/wait.h>
+#include <fcntl.h>
 #include "execute.h"
 #include "parse.h"
 
@@ -26,6 +27,7 @@ void exec_command(char * command){
   //printf("len_args: %d\n", len_args(args));
   if (exec_cd(args)) return;
   if (exec_exit(args)) return;
+  if (exec_redirect_output(args)) return;
   //if (exec_pipe(args)) return;
   else{
     exec_regular(args);
@@ -68,6 +70,29 @@ void exec_regular (char ** args){
       printf("That's not a valid command\n");
     }
   }
+}
+
+int exec_redirect_output(char ** args){
+  int c = 0;
+  while(args[c]){
+    if (strcmp(args[c], ">") == 0){
+      char ** input = calloc(128, 256 * sizeof(char));
+      for (int j = 0; j<c; j++){
+        input[j] = args[j];
+      }
+      int fd = open(args[c + 1], O_CREAT|O_EXCL|O_WRONLY, 0755);
+      if (fd < 0) {
+        fd = open(args[c + 1], O_WRONLY);
+      }
+      dup(STDOUT_FILENO);
+      dup2(fd, STDOUT_FILENO);
+      execvp(input[0], input);
+      close(fd);
+      return 1;
+    }
+    c++;
+  }
+  return 0;
 }
 
 int exec_pipe(char ** args) {
