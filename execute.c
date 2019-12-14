@@ -77,19 +77,23 @@ int exec_redirect_output(char ** args){
   int c = 0;
   while(args[c]){
     if (strcmp(args[c], ">") == 0){
-      char ** input = calloc(128, 256 * sizeof(char));
-      for (int j = 0; j<c; j++){
-        input[j] = args[j];
+      int f = fork();
+      if (f) {
+        int status;
+        wait(&status);
       }
-      fclose(fopen(args[c + 1], "w"));
-      int fd = open(args[c + 1], O_CREAT|O_WRONLY, 0644);
-      if (fd < 0) {
-        fd = open(args[c + 1], O_WRONLY);
+      else{
+        char ** input = calloc(128, 256 * sizeof(char));
+        for (int j = 0; j<c; j++){
+          input[j] = args[j];
+        }
+        fclose(fopen(args[c + 1], "w"));
+        int fd = open(args[c + 1], O_CREAT|O_WRONLY, 0644);
+        dup(STDOUT_FILENO);
+        dup2(fd, STDOUT_FILENO);
+        execvp(input[0], input);
+        close(fd);
       }
-      dup(STDOUT_FILENO);
-      dup2(fd, STDOUT_FILENO);
-      execvp(input[0], input);
-      close(fd);
       return 1;
     }
     c++;
