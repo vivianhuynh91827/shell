@@ -39,12 +39,48 @@ char * strip(char * line){
   return start;
 }
 
+/*======== int len_args (char ** chars) ==========
+  Input: char ** args
+  Returns: Number of arguments
+================================================*/
 int len_args(char ** args){
   char * cur_arg = args[0];
   int len = 0;
   while (cur_arg){
     len ++;
-    cur_arg = args[1];
+    cur_arg = args[len];
   }
   return len;
+}
+
+/*======== int count_redirects (char ** chars) ==========
+  Input: char ** args
+  Returns: Number of occurences of > or <
+=======================================================*/
+int count_redirects(char ** args){
+  int ans = 0;
+  int i = 0;
+  while(args[i]){
+    if (strcmp(args[i],">") == 0 || strcmp(args[i], "<") == 0){
+      ans++;
+    }
+    i++;
+  }
+  return ans;
+}
+
+/*======== int count_redirect_in (char ** chars) ==========
+  Input: char ** args
+  Returns: Number of occurences of >
+=======================================================*/
+int count_redirect_in(char ** args){
+  int ans = 0;
+  int i = 0;
+  while(args[i]){
+    if (strcmp(args[i],">") == 0){
+      ans++;
+    }
+    i++;
+  }
+  return ans;
 }

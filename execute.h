@@ -7,3 +7,4 @@ void exec_regular (char ** args);
 int exec_redirect_output(char ** args);
 int exec_redirect_input(char ** args);
 void output(char ** input, char * output);
+int exec_double_redirect(char ** args);

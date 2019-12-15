@@ -41,6 +41,7 @@ void exec_command(char * command){
   //printf("len_args: %d\n", len_args(args));
   if (exec_cd(args)) return;
   if (exec_exit(args)) return;
+  if (exec_double_redirect(args)) return;
   if (exec_redirect_output(args)) return;
   if (exec_redirect_input(args)) return;
   //if (exec_pipe(args)) return;
@@ -104,6 +105,72 @@ void exec_regular (char ** args){
     if (error == -1){
       printf("That's not a valid command\n");
     }
+  }
+}
+
+/*=============== void exec_double_redirect (char ** args) =============
+  Input: char ** args
+  Returns: 1 if the command calls double redirecttion
+           0 otherwise
+
+  Executes double redirection
+  There are two cases accounted for:
+    1. Redirecting output twice e.g. ls -l > output > output2
+    2. Redirecting input and then output e.g. tr a-z A-Z < output > output2
+======================================================================*/
+int exec_double_redirect(char ** args){
+  if (count_redirects(args) == 2){
+    int c = 0;
+    while(args[c]){
+      if (strcmp(args[c], ">") == 0) break;
+      c++;
+    }
+    int f = fork();
+    if (f) {
+      int status;
+      wait(&status);
+    }
+    else{
+      // Redirect output twice
+      if (count_redirect_in(args) == 2){
+        char ** input = calloc(256, sizeof(char));
+        for (int j = 0; j<c; j++){
+          input[j] = args[j];
+        }
+        fclose(fopen(args[c+1], "w"));
+        output(input, args[c+3]);
+      }
+      // Redirect input and then output
+      else{
+        char ** input = calloc(256, sizeof(char));
+        for (int j = 0; j<(c - 2); j++){
+          input[j] = args[j];
+        }
+        int fd_in = open(args[c - 1], O_RDONLY, 0644);
+        if (fd_in < 0) {
+          printf("Invalid input file %d: %s\n", errno, strerror(errno));
+          return 1;
+        }
+        dup(STDIN_FILENO);
+        dup2(fd_in, STDIN_FILENO);
+
+        fclose(fopen(args[c+1], "w"));
+        int fd_out = open(args[c+1], O_CREAT|O_WRONLY, 0644);
+        dup(STDOUT_FILENO);
+        dup2(fd_out, STDOUT_FILENO);
+
+        int error = execvp(input[0], input);
+        if (error == -1){
+          printf("That's not a valid command\n");
+        }
+        close(fd_in);
+        close(fd_out);
+      }
+    }
+    return 1;
+  }
+  else{
+    return 0;
   }
 }
 
