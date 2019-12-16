@@ -268,10 +268,11 @@ int exec_redirect_input(char ** args){
   return 0;
 }
 
-/*=============== void exec_pipe (char ** args) =============                  
+/*=============== int exec_pipe (char ** args) =============                  
   Input: char ** args                                                     
-  Returns: 1 if redirect input is called       
-           0 otherwise                                                                   
+  Returns: 1 if pipe is called       
+           0 otherwise  
+           
   Executes simple pipe command              
 ======================================================================*/
 int exec_pipe(char ** args) {
