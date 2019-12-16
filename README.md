@@ -7,7 +7,7 @@ Vivian Huynh and Jeffrey Chen Period 5
 - Implements redirection and pipes
 	
 ### Attempted:
-- We tried to implement multiple pipes
+- We tried to implement multiple working pipes in one line
 
 ### Bugs:
 - If pipe is given an invalid input, there will be an error and the shell crashes
