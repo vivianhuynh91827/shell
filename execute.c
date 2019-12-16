@@ -38,10 +38,10 @@ void exec_line(char * line){
 ========================================================*/
 void exec_command(char * command){
   char ** args = parse_args(command, " ");
-  printf("len_args: %d\n", len_args(args));
+  //printf("len_args: %d\n", len_args(args));
+  if (exec_pipe(args)) return;
   if (exec_cd(args)) return;
   if (exec_exit(args)) return;
-  if (exec_pipe(args)) return;
   if (exec_double_redirect(args)) return;
   if (exec_redirect_output(args)) return;
   if (exec_redirect_input(args)) return;
@@ -80,8 +80,11 @@ int exec_exit (char ** args){
   if (strcmp(args[0], "exit") == 0){
     printf("logout\n");
     printf("Saving session...\n");
+    sleep(1);
     printf("...copying shared history...\n");
+    sleep(1);
     printf("...saving history...truncating history files...\n");
+    sleep(1);
     printf("...completed.\n\n");
     printf("[Process completed]\n");
     exit(0);
@@ -265,23 +268,30 @@ int exec_redirect_input(char ** args){
   return 0;
 }
 
+/*=============== void exec_pipe (char ** args) =============                  
+  Input: char ** args                                                     
+  Returns: 1 if redirect input is called       
+           0 otherwise                                                                   
+  Executes simple pipe command              
+======================================================================*/
 int exec_pipe(char ** args) {
   if (len_args(args) != 3){
     return 0;
   }
   if (strcmp(args[1], "|")==0){
-    FILE * in = fopen( args[2], "r" );
-    if (in < 0) {
+    FILE * in = popen( args[0], "r" );
+    if (!in) {
       printf("errno: %d, error: %s\n", errno, strerror(errno));
+      return 0;
     }
-    FILE * out = fopen( args[0], "w" );
-    if (out < 0) {
+    FILE * out = popen( args[2], "w" );
+    if (!out) {
       printf("errno: %d, error: %s\n", errno, strerror(errno));
+      return 0;
     }
     char buff[256];
-    char * input = fgets( buff, 256, in );
-    while ( input ) {
-      fputs( buff, out );
+    while (fgets( buff,256,in )) {
+      fputs( buff,out );
     }
     pclose(in);
     
@@ -289,4 +299,4 @@ int exec_pipe(char ** args) {
     return 1;
   }
   return 0;
-}
+} 
