@@ -31,11 +31,14 @@ char * strip(char * line){
 }
 
 int len_args(char ** args){
+  if (args == NULL){
+    return 0;
+  }
   char * cur_arg = args[0];
   int len = 0;
   while (cur_arg){
     len ++;
-    cur_arg = args[1];
+    cur_arg = args[len];
   }
   return len;
 }
